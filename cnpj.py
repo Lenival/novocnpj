@@ -19,36 +19,33 @@ def to_uint64(cnpj_string):
     if not str.isalnum(cnpj_string):
         raise Exception("Não alfanumérico")
     
+    # Adequando eventuais caracteres maiúsculos
     cnpj_string_u = cnpj_string.upper()
     
-    # Inicialização de acumuladores multiplicativo e aditivo
-    acum_m = int(1)
-    acum_a = int(0)
-    acum_a += (0 if str.isnumeric(cnpj_string) else MAX_CNPJ_ANTIGO)
+    deslocamento = int(0 if str.isnumeric(cnpj_string) else MAX_CNPJ_ANTIGO)
     
     # Seleciona a base 10 para CNPJ antigo e 36 para novos
     base = int(10 if str.isnumeric(cnpj_string) else 36)
     
-    for alfanum in list(cnpj_string_u[::-1]):
-        acum_a += int(acum_m*int(ord(alfanum)-int(48)-int(7 if ord(alfanum)>=65 else 0)))
-        acum_m *=base
+    # Convertendo para base adequada e adicionando o deslocamento
+    cnpj_int = int(cnpj_string,base) + deslocamento
     
-    # print(int(acum_m))
-    print(f'O valor inteiro para {cnpj_string} é {int(acum_a)}')
-    return acum_a
+    print(f'O valor inteiro para {cnpj_string} é {cnpj_int}')
+    
+    return cnpj_int
     
 """
 to_string recebe um uint64 e retorna a string do CNPJ correspondente.
 """
-def to_string(cnpj_uint64):
-    if not isinstance(cnpj_uint64, int):
+def to_string(cnpj_int):
+    if not isinstance(cnpj_int, int):
         raise Exception("Não é um uint64")
     
     cnpj_string = ''
-    if cnpj_uint64 <= MAX_CNPJ_ANTIGO:
-        cnpj_string = str(cnpj_uint64)
+    if cnpj_int <= MAX_CNPJ_ANTIGO:
+        cnpj_string = str(cnpj_int)
     else:
-        (base,expoente,resto) = (int(36),int(11),int(cnpj_uint64-MAX_CNPJ_ANTIGO))
+        (base,expoente,resto) = (int(36),int(11),int(cnpj_int-MAX_CNPJ_ANTIGO))
         
         acum_m = int(base**int(expoente))
         quociente = int(0)
@@ -59,7 +56,8 @@ def to_string(cnpj_uint64):
             deslocamento_ascii = int((int(7) if quociente > 9 else int(0)))
             cnpj_string = cnpj_string + (chr( int(quociente + int(48) + deslocamento_ascii)))
             acum_m = acum_m//base
-    print(f'O CNPJ uint64 {cnpj_uint64} como string é: '+cnpj_string)
+    print(f'O CNPJ int {cnpj_int} como string é: '+cnpj_string)
+    return cnpj_string
 
 
 def main():
