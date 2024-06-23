@@ -57,7 +57,7 @@ def to_string(cnpj_uint64):
         raise Exception("Não é um uint64")
         
     if cnpj_uint64 <= MAX_CNPJ_ANTIGO:
-        (base,expoente,resto) = (np.uint64(10),np.uint64(11),cnpj_uint64)
+        (base,expoente,resto) = (np.uint64(10),np.uint64(13),cnpj_uint64)
     else:
         (base,expoente,resto) = (np.uint64(36),np.uint64(11),cnpj_uint64-MAX_CNPJ_ANTIGO)
         
@@ -83,6 +83,7 @@ def main():
     to_uint64("UM1000DEPEAO") # 4029288161716827807
     #to_uint64("um1000depeao") # 4029288161716827807
     to_uint64("123456789011") # 123456789011
+    to_uint64("12345678901112") # 123456789011
     to_uint64("ZZZZZZZZZZZZ") # 4738481338321616894
     to_uint64("00000000000A") # 4738481338321616894
     
@@ -95,6 +96,7 @@ def main():
     to_string(np.uint64(4029288161716827807)) # UM1000DEPEAO
     to_string(np.uint64(4738481338321616894)) # ZZZZZZZZZZZZ
     to_string(np.uint64(123456789011)) # 123456789011
+    to_string(np.uint64(12345678901112)) # 123456789011
     to_string(np.uint64(100000000000009)) # 00000000000A
     
     
